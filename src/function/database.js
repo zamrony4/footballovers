@@ -1,10 +1,8 @@
-const dbPromised = idb.open("footballovers", 1, upgradeDB => {
+const dbPromised = idb.open("footballovers11", 1, upgradeDB => {
     const favmatchObjectStore = upgradeDB.createObjectStore("favmatch", {
         keyPath: "id"
     })
-})
 
-const dbPromisedClub = idb.open("footballovers", 2, upgradeDB => {
     const favClubObjectStore = upgradeDB.createObjectStore("favclub", {
         keyPath: "id"
     })
@@ -39,29 +37,26 @@ const getMatchAll = () => {
 }
 
 const saveClub = (idClub, dataClub) => {
-    alert()
-    dbPromisedClub
+    dbPromised
     .then(function(db) {
         const tx = db.transaction("favclub", "readwrite");
         const store = tx.objectStore("favclub");
 
-        store.add(dataClub, id);
+        store.add(dataClub);
         return tx.complete;
     })
     .then(function() {
-        console.log('as');
-        
         M.toast({html: `Club added to favourites`})
     }).
-    catch(function() {
+    catch(function(error) {
         M.toast({html: `Club added error`})
-        console.log('Buku gagal disimpan.')
+        console.log(error)
     });
 }
 
 const getClubAll = () => {
     return new Promise((resolve, reject) => {
-        dbPromisedClub
+        dbPromised
         .then(function(db) {
             const tx = db.transaction("favclub", "readonly");
             const store = tx.objectStore("favclub");

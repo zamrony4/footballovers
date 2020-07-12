@@ -2,18 +2,12 @@
 import league from "../data/league.js";
 
 // import Function
-import { getMatchAll } from "./database.js";
+import { getMatchAll, getClubAll } from "./database.js";
 
 const loadFavourite = () => {
     const tabClass = document.querySelectorAll('.tabs');
     M.Tabs.init(tabClass);
 
-    // document.querySelectorAll(".data-tabs").forEach(elm => {
-    //     elm.addEventListener("click", event => {
-    //         const date = event.target.getAttribute("data-date");
-    //         getMatches(0, 'home-table', date, date)
-    //     })
-    // })
     getMatchAll().then((favmatch) => {
         const favouritematch = document.getElementById("favouritematch");
         let resHtmlHead = "";
@@ -32,7 +26,6 @@ const loadFavourite = () => {
                         <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                         <td>${statusMatch}</td>
                         <td width="8%">
-                            <a href="javascript:void(0)" class="fav-match"><i class="material-icons" data-id="${res.id}">star_outline</i></a>
                             <a href="javascript:void(0)" class="det-match"><i class="material-icons" data-id="${res.id}">info</i></a>
                         </td>
                         </tr>`
@@ -53,6 +46,44 @@ const loadFavourite = () => {
 
             const resHtmlTable = `<table>${resHtmlHead}</table>`
             favouritematch.innerHTML = resHtmlTable;
+        } else {
+            const resHtmlTable = `<div>Data Not Found</div>`
+            favouritematch.innerHTML = resHtmlTable;
+        }
+    })
+
+    getClubAll().then((favclub) => {
+        const favouriteclubs = document.getElementById("favouriteclubs");
+        let resHtml = "";
+        if (favclub.length > 0) {
+            resHtml += '<div class="row">'
+
+            favclub.forEach(res => {
+                resHtml += `
+                    <div class="col s12 m12 mt-3">
+                        <div class="card-panel">
+                            <div class="row valign-wrapper">
+                                <div class="col s3">
+                                    <img src="${res.crestUrl}" alt="" class="responsive-img"> <!-- notice the "circle" class -->
+                                </div>
+                                <div class="col s9">
+                                    <h5 class="black-text">
+                                        ${res.name}
+                                    </h5>
+                                    <a class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            });
+            
+            resHtml += '</div>'
+
+            favouriteclubs.innerHTML = resHtml
+        } else {
+            const resHtmlTable = `<div>Data Not Found</div>`
+            favouriteclubs.innerHTML = resHtmlTable;
         }
     })
 }
