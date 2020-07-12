@@ -4,9 +4,9 @@ import league from "../data/league.js";
 
 // Import Function
 import { dateDiff, dateFormat } from "./fnDateFormat.js";
+import { saveMatch } from "./database.js";
 
-const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
-    
+const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {    
     if (idLeague == 0) idLeague = '2021,2014,2002,2019,2015'
 
     const selectIdHtml = document.getElementById(idHtml)
@@ -55,7 +55,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                         resHtmlBody += `<tr>
                                         <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                                         <td>${statusMatch}</td>
-                                        <td width="5%"><i class="material-icons right">star_outline</i></td>
+                                        <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
                                         </tr>`
                                     }
                                 });
@@ -66,7 +66,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                                         <th colspan="3">${dateFull}</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody class="match-list">
                                                 ${resHtmlBody}
                                                 </tbody>`
                                 }
@@ -85,7 +85,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                         resHtmlBody += `<tr>
                                         <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                                         <td>${statusMatch}</td>
-                                        <td width="5%"><i class="material-icons right">star_outline</i></td>
+                                        <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
                                         </tr>`
                                     }
                                 });
@@ -96,7 +96,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                                         <th colspan="3">${resLeague.name}</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody class="match-list">
                                                 ${resHtmlBody}
                                                 </tbody>`
                                 }
@@ -115,6 +115,13 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                     }
 
                     selectIdHtml.innerHTML = resHtmlTable
+
+                    document.querySelectorAll(".match-list a").forEach(elm => {
+                        elm.addEventListener("click", event => {
+                            const idMatch = event.target.getAttribute("data-id");
+                            saveMatch(idMatch)
+                        })
+                    })
                 })
             }
         })
@@ -151,7 +158,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                             resHtmlBody += `<tr>
                             <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                             <td>${statusMatch}</td>
-                            <td width="5%"><i class="material-icons right">star_outline</i></td>
+                            <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
                             </tr>`
                         }
                     });
@@ -162,7 +169,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                             <th colspan="3">${dateFull}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="match-list">
                                     ${resHtmlBody}
                                     </tbody>`
                     }
@@ -181,7 +188,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                             resHtmlBody += `<tr>
                             <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                             <td>${statusMatch}</td>
-                            <td width="5%"><i class="material-icons right">star_outline</i></td>
+                            <td width="5%"><a href="javascript:void(0)" class="fav-match" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
                             </tr>`
                         }
                     });
@@ -192,7 +199,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                             <th colspan="3">${resLeague.name}</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="match-list">
                                     ${resHtmlBody}
                                     </tbody>`
                     }
@@ -211,6 +218,13 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
         }
 
         selectIdHtml.innerHTML = resHtmlTable
+
+        document.querySelectorAll(".match-list a").forEach(elm => {
+            elm.addEventListener("click", event => {
+                const idMatch = event.target.getAttribute("data-id");
+                saveMatch(idMatch)
+            })
+        })
     })
 }
 
@@ -359,6 +373,10 @@ const getStanding = (idLeague, idHtml) => {
 
         selectIdHtml.innerHTML = resHtml
     })
+}
+
+const getMatcheByID = (idMatch) => {
+    
 }
 
 export {getMatches, getClubs, getStanding}
