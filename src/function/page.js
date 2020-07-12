@@ -1,6 +1,7 @@
 // Import Function
 import { loadMatches } from "./home.js";
 import { loadLeague, loadExploreLeague } from "./explore.js";
+import { loadFavourite } from "./favourites.js";
 
 const loadPage = (page, id = 0) => {
     const xhr = new XMLHttpRequest();
@@ -18,6 +19,8 @@ const loadPage = (page, id = 0) => {
                     } else {
                         loadExploreLeague(id)
                     }
+                } else if (page === 'favourites') {
+                    loadFavourite()
                 }
             } else if (this.status == 404) {
                 content.innerHTML = `<p>Halaman ${page} tidak ditemukan.</p>`;

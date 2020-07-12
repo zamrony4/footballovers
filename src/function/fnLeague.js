@@ -14,7 +14,7 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
     
     selectIdHtml.innerHTML = `<tr>
                                 <td colspan="3">
-                                    <div class="preloader-wrapper small active center">
+                                    <div class="preloader-wrapper large active loader">
                                         <div class="spinner-layer spinner-green-only">
                                         <div class="circle-clipper left">
                                             <div class="circle"></div>
@@ -55,7 +55,10 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                         resHtmlBody += `<tr>
                                         <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                                         <td>${statusMatch}</td>
-                                        <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
+                                        <td width="8%">
+                                            <a href="javascript:void(0)" class="fav-match"><i class="material-icons" data-id="${res.id}">star_outline</i></a>
+                                            <a href="javascript:void(0)" class="det-match"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                        </td>
                                         </tr>`
                                     }
                                 });
@@ -85,7 +88,10 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                                         resHtmlBody += `<tr>
                                         <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                                         <td>${statusMatch}</td>
-                                        <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
+                                        <td width="8%">
+                                            <a href="javascript:void(0)" class="fav-match"><i class="material-icons" data-id="${res.id}">star_outline</i></a>
+                                            <a href="javascript:void(0)" class="det-match"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                        </td>
                                         </tr>`
                                     }
                                 });
@@ -116,10 +122,13 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
 
                     selectIdHtml.innerHTML = resHtmlTable
 
-                    document.querySelectorAll(".match-list a").forEach(elm => {
+                    document.querySelectorAll(".fav-match").forEach(elm => {
                         elm.addEventListener("click", event => {
                             const idMatch = event.target.getAttribute("data-id");
-                            saveMatch(idMatch)
+                            const dataMatch = getMatcheByID(idMatch)
+                            dataMatch.then(result => {
+                                saveMatch(idMatch, result.match)
+                            })
                         })
                     })
                 })
@@ -158,7 +167,10 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                             resHtmlBody += `<tr>
                             <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                             <td>${statusMatch}</td>
-                            <td width="5%"><a href="javascript:void(0)" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
+                            <td width="8%">
+                                <a href="javascript:void(0)" class="fav-match"><i class="material-icons" data-id="${res.id}">star_outline</i></a>
+                                <a href="javascript:void(0)" class="det-match"><i class="material-icons" data-id="${res.id}">info</i></a>
+                            </td>
                             </tr>`
                         }
                     });
@@ -188,7 +200,10 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
                             resHtmlBody += `<tr>
                             <td>${res.homeTeam.name} <br> ${res.awayTeam.name}</td>
                             <td>${statusMatch}</td>
-                            <td width="5%"><a href="javascript:void(0)" class="fav-match" class="fav-match"><i class="material-icons right" data-id="1">star_outline</i></a></td>
+                            <td width="8%">
+                                <a href="javascript:void(0)" class="fav-match"><i class="material-icons" data-id="${res.id}">star_outline</i></a>
+                                <a href="javascript:void(0)" class="det-match"><i class="material-icons" data-id="${res.id}">info</i></a>
+                            </td>
                             </tr>`
                         }
                     });
@@ -219,10 +234,13 @@ const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {
 
         selectIdHtml.innerHTML = resHtmlTable
 
-        document.querySelectorAll(".match-list a").forEach(elm => {
+        document.querySelectorAll(".fav-match").forEach(elm => {
             elm.addEventListener("click", event => {
                 const idMatch = event.target.getAttribute("data-id");
-                saveMatch(idMatch)
+                const dataMatch = getMatcheByID(idMatch)
+                dataMatch.then(result => {
+                    saveMatch(idMatch, result.match)
+                })
             })
         })
     })
@@ -376,7 +394,33 @@ const getStanding = (idLeague, idHtml) => {
 }
 
 const getMatcheByID = (idMatch) => {
-    
+    const urlApi = `${api.url}matches/${idMatch}`
+
+    return new Promise((resolve, reject) => {
+        if ("caches" in window) {
+            caches.match(urlApi).then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        resolve(data)
+                    })
+                }
+            })
+        }
+
+        fetch(urlApi, {
+            method: 'GET',
+            headers: {
+                'X-Auth-Token': api.token
+            }
+        }).then(response => {
+            if (response) {
+                response.json().then(data => {
+                    resolve(data)
+                })
+            }
+        })
+
+    })
 }
 
 export {getMatches, getClubs, getStanding}
