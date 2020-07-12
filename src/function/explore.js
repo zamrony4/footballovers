@@ -4,7 +4,7 @@ import league from "../data/league.js";
 // import Function
 import { dateFormat } from "./fnDateFormat.js";
 import { loadPage } from "./page.js";
-import { getStanding, getMatches } from "./fnLeague.js";
+import { getStanding, getMatches, getClubs } from "./fnLeague.js";
 
 const loadLeague = () => {
     const exploreLeague = document.getElementById("explore-league")
@@ -43,9 +43,23 @@ const loadExploreLeague = (idLeague) => {
                     <div class="row">
                         <div class="col s12 mb-3">
                             <ul class="tabs mb-3" id="explore-tabs">
+                                <li class="tab col s3"><a class="active" href="#exploreclub">Clubs</a></li>
                                 <li class="tab col s3"><a class="active" href="#explorestanding">Standing</a></li>
                                 <li class="tab col s3"><a href="#explorefixtures">Fixtures</a></li>
                             </ul>
+                        </div>
+                        <div id="exploreclub" class="col s12 center-align">
+                            <div class="preloader-wrapper big active mt-5">
+                                <div class="spinner-layer spinner-green-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div id="explorestanding" class="col s12 center-align">
                             <div class="preloader-wrapper big active mt-5">
@@ -80,6 +94,7 @@ const loadExploreLeague = (idLeague) => {
     const tabExplore = document.querySelectorAll('.tabs');
     M.Tabs.init(tabExplore);
 
+    getClubs(idLeague, 'exploreclub', 2019)
     getStanding(idLeague, 'explorestanding')
     getMatches(idLeague, 'explorefixtures', dateFormat(1, -3), dateFormat(1, 3))
 }

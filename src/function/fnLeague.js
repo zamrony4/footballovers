@@ -4,7 +4,7 @@ import league from "../data/league.js";
 
 // Import Function
 import { dateDiff, dateFormat } from "./fnDateFormat.js";
-import { saveMatch } from "./database.js";
+import { saveMatch, saveClub } from "./database.js";
 
 const getMatches = (idLeague, idHtml, dateFrom, dateTo) => {    
     if (idLeague == 0) idLeague = '2021,2014,2002,2019,2015'
@@ -261,10 +261,19 @@ const getClubs = (idLeague, idHtml, season) => {
 
                         result.teams.forEach(res => {
                             resHtml += `
-                                <div class="col s4 m3 mt-3">
-                                    <div class="card" style="height: 150px">
-                                        <div class="card-content">
-                                            <img class="responsive-img" src="${res.crestUrl}">
+                                <div class="col s12 m12 mt-3">
+                                    <div class="card-panel">
+                                        <div class="row valign-wrapper">
+                                            <div class="col s3">
+                                                <img src="${res.crestUrl}" alt="" class="responsive-img"> <!-- notice the "circle" class -->
+                                            </div>
+                                            <div class="col s9">
+                                                <h5 class="black-text">
+                                                    ${res.name}
+                                                </h5>
+                                                <a class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                                <a class="waves-effect waves-light btn btn-floating orange darken-1 fav-club"><i class="material-icons" data-id="${res.id}">star</i></a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -275,6 +284,16 @@ const getClubs = (idLeague, idHtml, season) => {
                     }
 
                     selectIdHtml.innerHTML = resHtml
+
+                    document.querySelectorAll(".fav-club").forEach(elm => {
+                        elm.addEventListener("click", event => {
+                            const idClub = event.target.getAttribute("data-id");
+                            const dataClub = getClubByID(idClub)
+                            dataClub.then(result => {
+                                saveClub(idClub, result)
+                            })
+                        })
+                    })
                 })
             }
         })
@@ -296,10 +315,19 @@ const getClubs = (idLeague, idHtml, season) => {
 
             result.teams.forEach(res => {
                 resHtml += `
-                    <div class="col s4 m3 mt-3">
-                        <div class="card" style="height: 150px">
-                            <div class="card-content">
-                                <img class="responsive-img" src="${res.crestUrl}">
+                    <div class="col s12 m12 mt-3">
+                        <div class="card-panel">
+                            <div class="row valign-wrapper">
+                                <div class="col s3">
+                                <img src="${res.crestUrl}" alt="" class="responsive-img"> <!-- notice the "circle" class -->
+                                </div>
+                                <div class="col s9">
+                                    <h5 class="black-text">
+                                        ${res.name}
+                                    </h5>
+                                    <a class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                    <a class="waves-effect waves-light btn btn-floating orange darken-1 fav-club"><i class="material-icons" data-id="${res.id}">star</i></a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -310,6 +338,16 @@ const getClubs = (idLeague, idHtml, season) => {
         }
 
         selectIdHtml.innerHTML = resHtml
+
+        document.querySelectorAll(".fav-club").forEach(elm => {
+            elm.addEventListener("click", event => {
+                const idClub = event.target.getAttribute("data-id");
+                const dataClub = getClubByID(idClub)
+                dataClub.then(result => {
+                    saveClub(idClub, result)
+                })
+            })
+        })
     })
 }
 
@@ -395,6 +433,36 @@ const getStanding = (idLeague, idHtml) => {
 
 const getMatcheByID = (idMatch) => {
     const urlApi = `${api.url}matches/${idMatch}`
+
+    return new Promise((resolve, reject) => {
+        if ("caches" in window) {
+            caches.match(urlApi).then(response => {
+                if (response) {
+                    response.json().then(data => {
+                        resolve(data)
+                    })
+                }
+            })
+        }
+
+        fetch(urlApi, {
+            method: 'GET',
+            headers: {
+                'X-Auth-Token': api.token
+            }
+        }).then(response => {
+            if (response) {
+                response.json().then(data => {
+                    resolve(data)
+                })
+            }
+        })
+
+    })
+}
+
+const getClubByID = (idClub) => {
+    const urlApi = `${api.url}teams/${idClub}`
 
     return new Promise((resolve, reject) => {
         if ("caches" in window) {
