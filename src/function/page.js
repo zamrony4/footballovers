@@ -2,6 +2,7 @@
 import { loadMatches } from "./home.js";
 import { loadLeague, loadExploreLeague } from "./explore.js";
 import { loadFavourite } from "./favourites.js";
+import { loadClub } from "./club.js";
 
 const loadPage = (page, id = 0) => {
     const xhr = new XMLHttpRequest();
@@ -21,6 +22,8 @@ const loadPage = (page, id = 0) => {
                     }
                 } else if (page === 'favourites') {
                     loadFavourite()
+                } else if (page === 'club') {
+                    loadClub(id)
                 }
             } else if (this.status == 404) {
                 content.innerHTML = `<p>Halaman ${page} tidak ditemukan.</p>`;

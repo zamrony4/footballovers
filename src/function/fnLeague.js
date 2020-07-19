@@ -271,7 +271,7 @@ const getClubs = (idLeague, idHtml, season) => {
                                                 <h5 class="black-text">
                                                     ${res.name}
                                                 </h5>
-                                                <a class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                                <a href="#/club/${res.id}" class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
                                                 <a class="waves-effect waves-light btn btn-floating orange darken-1 fav-club"><i class="material-icons" data-id="${res.id}">star</i></a>
                                             </div>
                                         </div>
@@ -292,6 +292,14 @@ const getClubs = (idLeague, idHtml, season) => {
                             dataClub.then(result => {
                                 saveClub(idClub, result)
                             })
+                        })
+                    })
+
+                    document.querySelectorAll(".det-club").forEach(elm => {
+                        elm.addEventListener("click", event => {
+                            const page = window.location.hash.split('/')[1]
+                            const idClub = event.target.getAttribute("data-id");
+                            loadPage(page, idClub)
                         })
                     })
                 })
@@ -325,7 +333,7 @@ const getClubs = (idLeague, idHtml, season) => {
                                     <h5 class="black-text">
                                         ${res.name}
                                     </h5>
-                                    <a class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
+                                    <a href="#/club/${res.id}" class="waves-effect waves-light btn btn-floating blue darken-1 det-club"><i class="material-icons" data-id="${res.id}">info</i></a>
                                     <a class="waves-effect waves-light btn btn-floating orange darken-1 fav-club"><i class="material-icons" data-id="${res.id}">star</i></a>
                                 </div>
                             </div>
@@ -346,6 +354,14 @@ const getClubs = (idLeague, idHtml, season) => {
                 dataClub.then(result => {
                     saveClub(idClub, result)
                 })
+            })
+        })
+
+        document.querySelectorAll(".det-club").forEach(elm => {
+            elm.addEventListener("click", event => {
+                const page = window.location.hash.split('/')[1]
+                const idClub = event.target.getAttribute("data-id");
+                loadPage(page, idClub)
             })
         })
     })
@@ -491,4 +507,4 @@ const getClubByID = (idClub) => {
     })
 }
 
-export {getMatches, getClubs, getStanding}
+export {getMatches, getClubs, getStanding, getClubByID}
